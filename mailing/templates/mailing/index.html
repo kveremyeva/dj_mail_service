@@ -17,7 +17,9 @@
                 отправок в одном удобном интерфейсе.
             </p>
         </div>
+        {% endif %}
 
+        {% if not user.is_authenticated %}
         <div class="auth-section">
             <h3 class="mb-4">Начните работу прямо сейчас!</h3>
             <div class="d-flex justify-content-center gap-3 flex-wrap">

@@ -27,8 +27,4 @@ urlpatterns = [
     path('mailings/<int:pk>/delete/', views.MailingDeleteView.as_view(), name='mailing_delete'),
     path('mailings/<int:pk>/send/', views.MailingSendView.as_view(), name='mailing_send'),
 
-    path('manager/users/', views.UserListView.as_view(), name='user_list'),
-    path('manager/users/<int:pk>/block/', views.UserBlockView.as_view(), name='user_block'),
-    path('manager/mailings/<int:pk>/disable/', views.MailingDisableView.as_view(), name='mailing_disable')
-
 ]
