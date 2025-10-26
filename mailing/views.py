@@ -1,14 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
-from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from mailing.forms import ClientForm, MessageForm, MailingForm
 from mailing.models import Client, Mailing, Message, MailingAttempt
 from mailing.services import send_mailing
-from users.models import CustomUser
 
 
 class OwnerMixin(UserPassesTestMixin):
@@ -27,21 +26,6 @@ class OwnerListMixin:
         return self.model.objects.filter(owner=self.request.user)
 
 
-class ManagerRequiredMixin(UserPassesTestMixin):
-    """Миксин для проверки роли менеджера"""
-    def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.is_manager()
-
-
-class ManagerAccessMixin:
-    """Миксин для предоставления доступа менеджеру ко всем объектам"""
-    def get_queryset(self):
-        if self.request.user.is_manager():
-            return self.model.objects.all()
-        return self.model.objects.filter(owner=self.request.user)
-
-
-@cache_page(60 * 5)
 def index(request):
     """Главная страница со статистикой"""
     if request.user.is_authenticated:
@@ -192,29 +176,3 @@ class MailingSendView(OwnerMixin, LoginRequiredMixin, View):
             print(f"Рассылка #{mailing.id} отправлена. Успешно: {sent}, Ошибок: {failed}")
 
         return redirect('mailing:mailing_detail', pk=pk)
-
-
-class UserListView(ManagerRequiredMixin, ListView):
-    """Просмотр списка пользователей (только для менеджеров)"""
-    model = CustomUser
-    template_name = 'mailing/user_list.html'
-    context_object_name = 'users'
-
-
-class UserBlockView(ManagerRequiredMixin, View):
-    """Блокировка/разблокировка пользователя"""
-    def post(self, request, pk):
-        user = get_object_or_404(CustomUser, pk=pk)
-        if user != request.user:  # Нельзя заблокировать себя
-            user.is_active = not user.is_active
-            user.save()
-        return redirect('mailing:user_list')
-
-
-class MailingDisableView(ManagerRequiredMixin, View):
-    """Отключение рассылки менеджером"""
-    def post(self, request, pk):
-        mailing = get_object_or_404(Mailing, pk=pk)
-        mailing.status = 'completed'
-        mailing.save()
-        return redirect('mailing:mailing_list')

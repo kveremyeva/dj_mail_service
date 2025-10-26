@@ -59,3 +59,4 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     template_name = 'users/logout.html'
+    next_page = reverse_lazy('mailing:index')
