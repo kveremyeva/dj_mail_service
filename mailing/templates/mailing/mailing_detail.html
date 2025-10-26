@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h2>Рассылка #{{ object.id }}</h2>
+        <h2>Рассылка #{{ mailing.get_user_mailing_number }}</h2>
         
         <div class="card mb-4">
             <div class="card-header">
@@ -94,16 +94,25 @@
             </div>
         </div>
         
-        <div class="mt-3">
-            <form method="post" action="{% url 'mailing:mailing_send' object.pk %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success w-100 mb-2">
-                    Отправить рассылку сейчас
-                </button>
-            </form>
-            <a href="{% url 'mailing:mailing_edit' object.pk %}" class="btn btn-outline-secondary w-100 mb-2">Редактировать</a>
-            <a href="{% url 'mailing:mailing_delete' object.pk %}" class="btn btn-outline-danger w-100">Удалить</a>
-        </div>
+<div class="mt-3">
+    {% if not perms.users.can_block_users %}
+        <form method="post" action="{% url 'mailing:mailing_send' object.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success w-100 mb-2">
+                Отправить рассылку сейчас
+            </button>
+        </form>
+        <a href="{% url 'mailing:mailing_edit' object.pk %}" class="btn btn-outline-secondary w-100 mb-2">Редактировать</a>
+        <a href="{% url 'mailing:mailing_delete' object.pk %}" class="btn btn-outline-danger w-100">Удалить</a>
+    {% else %}
+        {% if object.status == 'started' %}
+        <form method="post" action="{% url 'mailing:mailing_disable' object.pk %}" class="d-inline w-100 mb-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning w-100">Отключить рассылку</button>
+        </form>
+        {% endif %}
+    {% endif %}
+</div>
     </div>
 </div>
 

@@ -8,6 +8,12 @@
     <a href="{% url 'mailing:client_create' %}" class="btn btn-primary">Добавить клиента</a>
 </div>
 
+{% if user.is_manager %}
+<div class="alert alert-info mb-4">
+    <strong>Режим менеджера</strong> - вы просматриваете всех клиентов
+</div>
+{% endif %}
+
 <table class="table table-striped">
     <thead>
         <tr>

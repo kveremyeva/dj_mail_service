@@ -17,6 +17,14 @@ class CustomUser(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         ordering = ['email']
+        permissions = [
+            ("can_block_users", "Может блокировать пользователей"),
+            ("can_disable_mailings", "Может отключать рассылки"),
+        ]
 
     def __str__(self):
         return self.email
+
+    def is_manager(self):
+        """Проверяет, является ли пользователь менеджером"""
+        return self.groups.filter(name='Managers').exists() or self.has_perm('users.can_block_users')

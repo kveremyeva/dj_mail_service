@@ -1,17 +1,22 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
-
 from mailing.forms import ClientForm, MessageForm, MailingForm
 from mailing.models import Client, Mailing, Message, MailingAttempt
 from mailing.services import send_mailing
+from users.models import CustomUser
 
 
 class OwnerMixin(UserPassesTestMixin):
     """Универсальный миксин для проверки владельца объекта"""
+
     def test_func(self):
+        if self.request.user.has_perm('users.can_block_users'):
+            return True
+
         if hasattr(self, 'get_object'):
             obj = self.get_object()
         else:
@@ -20,8 +25,10 @@ class OwnerMixin(UserPassesTestMixin):
 
 
 class OwnerListMixin:
-    """Миксин для ListView - фильтрует только объекты владельца"""
+    """Миксин для ListView - фильтрует только объекты владельца, кроме менеджеров"""
     def get_queryset(self):
+        if self.request.user.has_perm('users.can_block_users'):
+            return self.model.objects.all()
         return self.model.objects.filter(owner=self.request.user)
 
 
@@ -175,3 +182,44 @@ class MailingSendView(OwnerMixin, LoginRequiredMixin, View):
             print(f"Рассылка #{mailing.id} отправлена. Успешно: {sent}, Ошибок: {failed}")
 
         return redirect('mailing:mailing_detail', pk=pk)
+
+
+class UserListView(LoginRequiredMixin, ListView):
+    """Просмотр списка пользователей (только для менеджеров)"""
+    model = CustomUser
+    template_name = 'mailing/user_list.html'
+    context_object_name = 'users'
+    ordering = ['email']
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('users.can_block_users'):
+            return HttpResponseForbidden("У вас нет прав для просмотра этой страницы.")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class UserBlockView(LoginRequiredMixin, View):
+    """Блокировка/разблокировка пользователя"""
+
+    def post(self, request, pk):
+        if not request.user.has_perm('users.can_block_users'):
+            return HttpResponseForbidden("У вас нет прав для блокировки пользователей.")
+
+        user = get_object_or_404(CustomUser, pk=pk)
+        if user != request.user:
+            user.is_active = not user.is_active
+            user.save()
+
+        return redirect('mailing:user_list')
+
+
+class MailingDisableView(LoginRequiredMixin, View):
+    """Отключение рассылки менеджером"""
+    def post(self, request, pk):
+        if not request.user.has_perm('mailing.can_disable_mailings'):
+            return HttpResponseForbidden("У вас нет прав для отключения рассылок.")
+
+        mailing = get_object_or_404(Mailing, pk=pk)
+        mailing.status = 'completed'
+        mailing.save()
+
+        return redirect('mailing:mailing_list')

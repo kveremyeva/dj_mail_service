@@ -15,6 +15,11 @@
                     <a class="nav-link" href="{% url 'mailing:client_list' %}">Клиенты</a>
                     <a class="nav-link" href="{% url 'mailing:message_list' %}">Сообщения</a>
                     <a class="nav-link" href="{% url 'mailing:mailing_list' %}">Рассылки</a>
+                    {% if perms.users.can_block_users %}
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'mailing:user_list' %}">Управление пользователями</a>
+                    </div>
+                    {% endif %}
                 </div>
             {% endif %}
             <div class="navbar-nav ms-auto">

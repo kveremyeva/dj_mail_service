@@ -12,7 +12,7 @@
 
 {% if user.is_manager %}
 <div class="alert alert-info mb-4">
-    <strong>Режим менеджера</strong> - вы просматриваете все рассылки системы
+    <strong>Режим менеджера</strong> - вы просматриваете все рассылки
 </div>
 {% endif %}
 
@@ -34,7 +34,7 @@
     <tbody>
         {% for mailing in mailings %}
         <tr>
-            <td>{{ mailing.id }}</td>
+            <td>{{ mailing.get_user_mailing_number }}</td>
             <td>{{ mailing.message.subject }}</td>
             {% if user.is_manager %}
             <td>{{ mailing.owner.username }}</td>
@@ -70,8 +70,7 @@
                 <a href="{% url 'mailing:mailing_edit' mailing.pk %}" class="btn btn-sm btn-outline-secondary">Редактировать</a>
                 <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
                 {% endif %}
-
-                {% if user.is_manager and mailing.status == 'started' %}
+                {% if perms.mailing.can_disable_mailings and mailing.status == 'started' %}
                 <form method="post" action="{% url 'mailing:mailing_disable' mailing.pk %}" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-sm btn-warning">Отключить</button>
