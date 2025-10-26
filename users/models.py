@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
     phone_number = models.CharField(max_length=15, verbose_name='Номер телефона', blank=True, null=True)

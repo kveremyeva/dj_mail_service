@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.mail import send_mail
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from .services import verify_email, send_verification_email
+from .services import verify_email
 
 
 class RegisterView(CreateView):
@@ -56,6 +56,7 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('mailing:index')
+
 
 class CustomLogoutView(LogoutView):
     template_name = 'users/logout.html'

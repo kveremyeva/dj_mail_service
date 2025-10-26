@@ -19,6 +19,9 @@ dependencies = [
 packages = [{include = "src"}]
 
 
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.3.0"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
