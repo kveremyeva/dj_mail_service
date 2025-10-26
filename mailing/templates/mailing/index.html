@@ -1,0 +1,97 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Главная страница - Сервис рассылок{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        {% if not user.is_authenticated %}
+        <div class="hero-section mb-5">
+            <h1 class="display-4 mb-4">Сервис управления рассылками</h1>
+            <p class="lead mb-4">
+                Добро пожаловать на сайт! Здесь вы можете легко создавать и отправлять
+                email-рассылки своим клиентам.
+            </p>
+            <p class="text-muted mb-5">
+                Управляйте клиентами, создавайте шаблоны сообщений и отслеживайте статистику
+                отправок в одном удобном интерфейсе.
+            </p>
+        </div>
+
+        <div class="auth-section">
+            <h3 class="mb-4">Начните работу прямо сейчас!</h3>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'users:login' %}" class="btn btn-primary btn-lg px-4">Войти в систему</a>
+                <a href="{% url 'users:register' %}" class="btn btn-outline-primary btn-lg px-4">Зарегистрироваться</a>
+            </div>
+
+            <div class="mt-5">
+                <h4 class="mb-3">Возможности сервиса:</h4>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5>Клиенты</h5>
+                                <p class="small">Управляйте базой клиентов и получателей рассылок</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5>Сообщения</h5>
+                                <p class="small">Создавайте шаблоны писем для ваших рассылок</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5>Рассылки</h5>
+                                <p class="small">Настраивайте и отправляйте массовые рассылки</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="dashboard-section">
+            <div class="alert alert-success mb-4">
+                <h4>Добро пожаловать, {{ user.username }}!</h4>
+                <p class="mb-0">Вы успешно вошли в систему. Теперь вы можете начать работу с рассылками.</p>
+            </div>
+            <div class="mt-5">
+                <h4 class="mb-4">Ваша статистика</h4>
+                <div class="row justify-content-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-primary">
+                            <div class="card-body text-center">
+                                <h3>{{ total_mailings }}</h3>
+                                <p class="mb-0">Всего рассылок</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-success">
+                            <div class="card-body text-center">
+                                <h3>{{ active_mailings }}</h3>
+                                <p class="mb-0">Активных рассылок</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-info">
+                            <div class="card-body text-center">
+                                <h3>{{ unique_clients }}</h3>
+                                <p class="mb-0">Уникальных клиентов</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

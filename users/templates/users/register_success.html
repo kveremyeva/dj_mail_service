@@ -1,0 +1,18 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Регистрация успешна{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2>Регистрация успешна!</h2>
+                <p>Мы отправили письмо для подтверждения на ваш email.</p>
+                <p>Пожалуйста, проверьте вашу почту и перейдите по ссылке в письме.</p>
+                <a href="{% url 'mailing:index' %}" class="btn btn-primary">На главную</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

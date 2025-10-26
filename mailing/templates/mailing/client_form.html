@@ -1,0 +1,39 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}
+    {% if object %}Редактирование клиента{% else %}Добавление клиента{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'mailing:client_list' %}" class="btn btn-secondary mb-3">← Назад к списку</a>
+
+<h2>
+    {% if object %}Редактирование клиента{% else %}Добавление нового клиента{% endif %}
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="{{ form.email.id_for_label }}" class="form-label">Email:</label>
+        {{ form.email }}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.full_name.id_for_label }}" class="form-label">Ф.И.О.:</label>
+        {{ form.full_name }}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.comment.id_for_label }}" class="form-label">Комментарий:</label>
+        {{ form.comment }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        {% if object %}Сохранить изменения{% else %}Создать клиента{% endif %}
+    </button>
+    <a href="{% url 'mailing:client_list' %}" class="btn btn-secondary">Отмена</a>
+</form>
+
+{% endblock %}

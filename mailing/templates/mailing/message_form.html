@@ -1,0 +1,36 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}
+    {% if object %}Редактирование сообщения{% else %}Добавление сообщения{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'mailing:message_list' %}" class="btn btn-secondary mb-3">← Назад к списку</a>
+
+<h2>
+    {% if object %}Редактирование сообщения{% else %}Добавление нового сообщения{% endif %}
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="{{ form.subject.id_for_label }}" class="form-label">Тема письма:</label>
+        {{ form.subject }}
+        <div class="form-text">Укажите краткую и понятную тему письма.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.body.id_for_label }}" class="form-label">Текст письма:</label>
+        {{ form.body }}
+        <div class="form-text">Напишите основное содержание письма.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        {% if object %}Сохранить изменения{% else %}Создать сообщение{% endif %}
+    </button>
+    <a href="{% url 'mailing:message_list' %}" class="btn btn-secondary">Отмена</a>
+</form>
+
+{% endblock %}

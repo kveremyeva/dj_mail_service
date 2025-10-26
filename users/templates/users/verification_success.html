@@ -1,0 +1,18 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Email подтвержден{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2>Email подтвержден!</h2>
+                <p>Ваш email успешно подтвержден.</p>
+                <p>Теперь вы можете пользоваться всеми функциями сервиса.</p>
+                <a href="{% url 'mailing:index' %}" class="btn btn-primary">Начать работу</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

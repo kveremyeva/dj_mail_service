@@ -1,0 +1,11 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Сообщение{% endblock %}
+
+{% block content %}
+<body>
+    <h1>{{ message.subject }}</h1>
+    <p>{{ message.body }}</p>
+    <a href="{% url 'mailing:message_list' %}" class="btn btn-secondary mb-3">← Назад к списку сообщений</a>
+</body>
+{% endblock %}

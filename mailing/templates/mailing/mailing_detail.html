@@ -1,0 +1,146 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Детали рассылки #{{ object.id }}{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary mb-3">← Назад к списку</a>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>Рассылка #{{ object.id }}</h2>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Основная информация</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="200">Владелец:</th>
+                        <td>{{ object.owner.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Статус:</th>
+                        <td>
+                            <span class="badge
+                                {% if object.status == 'created' %}bg-secondary
+                                {% elif object.status == 'started' %}bg-success
+                                {% elif object.status == 'completed' %}bg-primary
+                                {% endif %}">
+                                {{ object.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Начало:</th>
+                        <td>
+                            {% if object.start_time %}
+                                {{ object.start_time|date:"d.m.Y H:i" }}
+                            {% else %}
+                                <span class="text-muted">Не начата</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Окончание:</th>
+                        <td>
+                            {% if object.end_time %}
+                                {{ object.end_time|date:"d.m.Y H:i" }}
+                            {% else %}
+                                <span class="text-muted">Не завершена</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Сообщение:</th>
+                        <td>{{ object.message.subject }}</td>
+                    </tr>
+                    <tr>
+                        <th>Количество получателей:</th>
+                        <td>{{ object.clients.count }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Текст сообщения</h5>
+            </div>
+            <div class="card-body">
+                <h6>{{ object.message.subject }}</h6>
+                <p class="mt-3">{{ object.message.body|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Получатели</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for client in object.clients.all %}
+                    <li class="list-group-item">
+                        <strong>{{ client.full_name }}</strong><br>
+                        <small class="text-muted">{{ client.email }}</small>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Получатели не назначены</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <form method="post" action="{% url 'mailing:mailing_send' object.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success w-100 mb-2">
+                    Отправить рассылку сейчас
+                </button>
+            </form>
+            <a href="{% url 'mailing:mailing_edit' object.pk %}" class="btn btn-outline-secondary w-100 mb-2">Редактировать</a>
+            <a href="{% url 'mailing:mailing_delete' object.pk %}" class="btn btn-outline-danger w-100">Удалить</a>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">История попыток отправки</h5>
+    </div>
+    <div class="card-body">
+        {% if attempts %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Дата и время</th>
+                            <th>Статус</th>
+                            <th>Ответ сервера</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ attempt.attempt_time|date:"d.m.Y H:i" }}</td>
+                            <td>
+                                <span class="badge {% if attempt.status == 'success' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ attempt.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ attempt.server_response|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">Попыток отправки пока не было</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
