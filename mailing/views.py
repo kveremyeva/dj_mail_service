@@ -41,13 +41,21 @@ def index(request):
             status='started'
         ).count()
         unique_clients = Client.objects.filter(owner=request.user).count()
+        user_attempts = MailingAttempt.objects.filter(owner=request.user)
+        successful_attempts = user_attempts.filter(status='success').count()
+        failed_attempts = user_attempts.filter(status='failure').count()
+        total_sent_messages = successful_attempts
     else:
         total_mailings = active_mailings = unique_clients = 0
+        successful_attempts = failed_attempts = total_sent_messages = 0
 
     context = {
         'total_mailings': total_mailings,
         'active_mailings': active_mailings,
         'unique_clients': unique_clients,
+        'successful_attempts': successful_attempts,
+        'failed_attempts': failed_attempts,
+        'total_sent_messages': total_sent_messages,
     }
     return render(request, 'mailing/index.html', context)
 

@@ -91,6 +91,33 @@
                         </div>
                     </div>
                 </div>
+                <h4 class="mb-4 mt-5">Статистика отправок</h4>
+                <div class="row justify-content-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-success">
+                            <div class="card-body text-center">
+                                <h3>{{ successful_attempts }}</h3>
+                                <p class="mb-0">Успешных отправок</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-danger">
+                            <div class="card-body text-center">
+                                <h3>{{ failed_attempts }}</h3>
+                                <p class="mb-0">Неуспешных отправок</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-secondary">
+                            <div class="card-body text-center">
+                                <h3>{{ total_sent_messages }}</h3>
+                                <p class="mb-0">Отправлено сообщений</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
