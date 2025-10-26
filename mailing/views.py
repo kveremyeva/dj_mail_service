@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
@@ -166,7 +165,7 @@ class MailingSendView(OwnerMixin, LoginRequiredMixin, View):
     """Ручная отправка рассылки"""
     model = Mailing
 
-    def post(self,request, pk):
+    def post(self, request, pk):
         mailing = get_object_or_404(Mailing, pk=pk)
 
         if mailing.status == 'completed':

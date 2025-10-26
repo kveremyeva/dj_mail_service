@@ -27,6 +27,7 @@ class Client(models.Model):
     def get_absolute_url(self):
         return reverse('mailing:client_list')
 
+
 class Message(models.Model):
     """ Модель сообщение"""
     subject = models.CharField(max_length=255, verbose_name='Тема письма')
@@ -44,6 +45,7 @@ class Message(models.Model):
 
     def __str__(self):
         return self.subject
+
 
 class Mailing(models.Model):
     """ Модель рассылка"""
@@ -76,6 +78,7 @@ class Mailing(models.Model):
 
     def __str__(self):
         return f'Рассылка {self.id} от {self.start_time}'
+
 
 class MailingAttempt(models.Model):
     """ Модель Попытка рассылки"""
