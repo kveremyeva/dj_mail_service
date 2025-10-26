@@ -75,9 +75,20 @@ class Mailing(models.Model):
     class Meta:
         verbose_name = 'Рассылка'
         verbose_name_plural = 'Рассылки'
+        permissions = [
+            ("can_disable_mailings", "Может отключать рассылки"),
+        ]
 
     def __str__(self):
         return f'Рассылка {self.id} от {self.start_time}'
+
+    def get_user_mailing_number(self):
+        """Возвращает номер рассылки в рамках пользователя"""
+        user_mailings = Mailing.objects.filter(owner=self.owner).order_by('id')
+        for index, mailing in enumerate(user_mailings, 1):
+            if mailing.id == self.id:
+                return index
+        return None
 
 
 class MailingAttempt(models.Model):

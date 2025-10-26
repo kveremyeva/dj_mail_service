@@ -8,6 +8,12 @@
     <a href="{% url 'mailing:message_create' %}" class="btn btn-primary">Добавить сообщение</a>
 </div>
 
+{% if user.is_manager %}
+<div class="alert alert-info mb-4">
+    <strong>Режим менеджера</strong> - вы просматриваете все сообщения
+</div>
+{% endif %}
+
 <table class="table table-striped">
     <thead>
         <tr>
