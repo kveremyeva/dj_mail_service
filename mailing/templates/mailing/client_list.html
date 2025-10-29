@@ -30,6 +30,7 @@
             <td>{{ client.email }}</td>
             <td>{{ client.comment|truncatechars:25 }}</td>
             <td>
+                <a href="{% url 'mailing:client_detail' client.pk %}" class="btn btn-sm btn-outline-secondary">Просмотр</a>
                 <a href="{% url 'mailing:client_edit' client.pk %}" class="btn btn-sm btn-outline-secondary">Редактировать</a>
                 <a href="{% url 'mailing:client_delete' client.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
             </td>
