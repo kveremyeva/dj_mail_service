@@ -2,7 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page, cache_control
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from mailing.forms import ClientForm, MessageForm, MailingForm
 from mailing.models import Client, Mailing, Message, MailingAttempt
@@ -32,6 +34,8 @@ class OwnerListMixin:
         return self.model.objects.filter(owner=self.request.user)
 
 
+@cache_control(max_age=600)
+@cache_page(60 * 15)
 def index(request):
     """Главная страница со статистикой"""
     if request.user.is_authenticated:
@@ -60,6 +64,7 @@ def index(request):
     return render(request, 'mailing/index.html', context)
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ClientListView(LoginRequiredMixin, OwnerListMixin, ListView):
     model = Client
     template_name = 'mailing/client_list.html'
@@ -89,6 +94,7 @@ class ClientDeleteView(OwnerMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('mailing:client_list')
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class MessageListView(LoginRequiredMixin, OwnerListMixin, ListView):
     model = Message
     template_name = 'mailing/message_list.html'
@@ -124,6 +130,7 @@ class MessageDeleteView(OwnerMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('mailing:message_list')
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class MailingListView(LoginRequiredMixin, OwnerListMixin, ListView):
     model = Mailing
     template_name = 'mailing/mailing_list.html'
