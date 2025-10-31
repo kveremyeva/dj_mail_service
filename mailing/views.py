@@ -70,6 +70,12 @@ class ClientListView(LoginRequiredMixin, OwnerListMixin, ListView):
     template_name = 'mailing/client_list.html'
 
 
+class ClientDetailView(DetailView):
+    model = Client
+    template_name = 'mailing/client_detail.html'
+    context_object_name = 'client'
+
+
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
